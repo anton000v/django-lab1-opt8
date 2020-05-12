@@ -1,0 +1,44 @@
+{% extends 'Lab1/base.html' %}
+
+{% block content %}
+    
+    {% for question in all_questions %}
+        <div id="d_{{ question.id }}">
+      
+            <p>{{ question.question_text }}</p>
+            <input id ="q_{{ question.id }}"type="text"/>
+            <button onclick="checkAnswer('{{ question.id }}');">Проверить</button>
+        </div>
+        <div id="m_{{ question.id }}">
+
+        </div>
+
+    {% endfor %}
+
+
+{% endblock %}
+
+{% block js %}
+    <script>
+    function checkAnswer(id){
+        answer = $(`#q_${id}`).val();
+        $.ajax({
+            type: 'GET',
+            async: true,
+            url: '/check-answer/',
+            data: {
+                'id' : id,
+                'answer': answer,
+            },
+            success:function(data){
+                $(`#m_${id}`).empty();
+                $(`#m_${id}`).append(`<p>${data.message}</p>`);
+            },
+            error: function(data) {
+                alert('Some error with ajax request.');
+            },
+            dataType: 'json',
+            });
+    };
+</script>
+{% endblock %}
